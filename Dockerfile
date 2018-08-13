@@ -20,4 +20,4 @@ RUN rm -rf /var/cache/apk
 WORKDIR /tests
 
 # Inhibits pytest to write tests cache
-ENTRYPOINT [ "py.test", "-p" , "no:cacheprovider" ]
+ENTRYPOINT ["py.test", "-p", "no:cacheprovider"]
