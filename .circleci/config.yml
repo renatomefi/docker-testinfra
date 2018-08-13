@@ -1,0 +1,23 @@
+version: 2
+
+jobs:
+  lint:
+    docker:
+      - image: hadolint/hadolint:latest-debian
+    steps:
+      - checkout
+      - run: hadolint Dockerfile
+  build_and_test:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - run: make build
+      - run: make help 
+
+workflows:
+  version: 2
+  test_build_and_test:
+    jobs:
+      - lint
+      - build_and_test
