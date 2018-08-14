@@ -1,3 +1,5 @@
+all: build lint test
+
 .PHONY: *
 
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -11,3 +13,6 @@ help:
 
 lint:
 	docker run -v ${current_dir}:/project:ro --workdir=/project --rm -t hadolint/hadolint:latest-debian hadolint Dockerfile
+
+test:
+	docker run --rm -t -v ${current_dir}/test:/tests:ro -v /var/run/docker.sock:/var/run/docker.sock:ro renatomefi/testinfra:latest
