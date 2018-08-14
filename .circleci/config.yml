@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - run: make build
-      - run: make help 
+      - run: make test
 
 workflows:
   version: 2
