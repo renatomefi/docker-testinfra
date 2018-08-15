@@ -3,6 +3,8 @@ A testinfra Docker container
 
 This image helps you run [testinfra](https://testinfra.readthedocs.io/en/latest/) supporting both docker and ssh plugins
 
+[![Dockerhub badge](http://dockeri.co/image/renatomefi/docker-testinfra)](https://hub.docker.com/r/renatomefi/docker-testinfra)
+
 Running
 ======
 
