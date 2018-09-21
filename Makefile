@@ -6,7 +6,9 @@ mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(abspath $(patsubst %/,%,$(dir $(mkfile_path))))
 
 build:
-	docker build --pull -t renatomefi/docker-testinfra:latest .
+	rm -f ./tmp/tags.list
+	./build.sh 1.15.0 1.15 latest
+	./build.sh 1.14.1
 
 help:
 	docker run --rm -t renatomefi/docker-testinfra:latest --help
@@ -17,9 +19,9 @@ lint:
 test:
 	docker run --rm -t -v ${current_dir}/test:/tests:ro -v /var/run/docker.sock:/var/run/docker.sock:ro renatomefi/docker-testinfra:latest
 
-scan-vulnerability:
+scan-vulnerability: ./tmp/tags.list
 	docker-compose -f test/security/docker-compose.yml -p clair-ci up -d
 	RETRIES=0 && while ! wget -T 10 -q -O /dev/null http://localhost:6060/v1/namespaces ; do sleep 1 ; echo -n "." ; if [ $${RETRIES} -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; RETRIES=$$(($${RETRIES}+1)) ; done
 	mkdir -p ./tmp/clair/
-	clair-scanner --ip 172.17.0.1 -r ./tmp/clair/clair.json -l ./tmp/clair/clair.log renatomefi/docker-testinfra:latest
+	cat ./tmp/tags.list | xargs -I % sh -c 'clair-scanner --ip 172.17.0.1 -r "./tmp/clair/%.json" -l ./tmp/clair/clair.log %'; \
 	docker-compose -f test/security/docker-compose.yml -p clair-ci down
