@@ -28,6 +28,16 @@ jobs:
           at: ./tmp
       - run: docker load -i ./tmp/renatomefi-docker-testinfra.tar
       - run: make test
+  check-latest:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./tmp
+      - run: docker load -i ./tmp/renatomefi-docker-testinfra.tar
+      - run: rm ./tmp/renatomefi-docker-testinfra.tar
+      - run: make check-latest
   scan-vulnerability:
     machine:
       enabled: true
@@ -62,5 +72,8 @@ workflows:
           requires:
             - build
       - scan-vulnerability:
+          requires:
+            - build
+      - check-latest:
           requires:
             - build
