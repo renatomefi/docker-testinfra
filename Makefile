@@ -16,8 +16,8 @@ help:
 lint:
 	docker run -v ${current_dir}:/project:ro --workdir=/project --rm -t hadolint/hadolint:latest-debian hadolint Dockerfile
 
-test:
-	docker run --rm -t -v ${current_dir}/test:/tests:ro -v /var/run/docker.sock:/var/run/docker.sock:ro renatomefi/docker-testinfra:latest
+test: ./tmp/tags.list
+	cat ./tmp/tags.list | xargs -I % sh -c 'docker run --rm -t -v ${current_dir}/test:/tests:ro -v /var/run/docker.sock:/var/run/docker.sock:ro %'
 
 scan-vulnerability: ./tmp/tags.list
 	docker-compose -f test/security/docker-compose.yml -p clair-ci up -d
@@ -25,3 +25,9 @@ scan-vulnerability: ./tmp/tags.list
 	mkdir -p ./tmp/clair/
 	cat ./tmp/tags.list | xargs -I % sh -c 'clair-scanner --ip 172.17.0.1 -r "./tmp/clair/%.json" -l ./tmp/clair/clair.log %'; \
 	docker-compose -f test/security/docker-compose.yml -p clair-ci down
+
+ci-scan-vulnerability: ./tmp/tags.list
+	docker-compose -f test/security/docker-compose.yml -p clair-ci up -d
+	RETRIES=0 && while ! wget -T 10 -q -O /dev/null http://localhost:6060/v1/namespaces ; do sleep 1 ; echo -n "." ; if [ $${RETRIES} -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; RETRIES=$$(($${RETRIES}+1)) ; done
+	mkdir -p ./tmp/clair/
+	cat ./tmp/tags.list | xargs -I % sh -c 'clair-scanner --ip 172.17.0.1 -r "./tmp/clair/%.json" -l ./tmp/clair/clair.log %'
