@@ -59,6 +59,18 @@ jobs:
       - run: make ci-scan-vulnerability
       - store_artifacts:
           path: ./tmp/clair
+  download-tags:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - run: make download-tags
+      - run: docker save renatomefi/docker-testinfra -o ./tmp/renatomefi-docker-testinfra.tar
+      - persist_to_workspace:
+          root: ./tmp
+          paths:
+            - renatomefi-docker-testinfra.tar
+            - tags.list
 
 workflows:
   version: 2
@@ -77,3 +89,15 @@ workflows:
       - check-latest:
           requires:
             - build
+  scan_vulnerabilities_weekly:
+    triggers:
+      - schedule:
+          cron: "0 3 * * 3"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - download-tags
+      - ci-scan-vulnerability
+    
