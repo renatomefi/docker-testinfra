@@ -7,17 +7,97 @@ jobs:
     steps:
       - checkout
       - run: hadolint Dockerfile
-  build_and_test:
+  build:
     machine:
       enabled: true
     steps:
       - checkout
       - run: make build
+      - run: docker save renatomefi/docker-testinfra -o ./tmp/renatomefi-docker-testinfra.tar
+      - persist_to_workspace:
+          root: ./tmp
+          paths:
+            - renatomefi-docker-testinfra.tar
+            - tags.list
+  test:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./tmp
+      - run: docker load -i ./tmp/renatomefi-docker-testinfra.tar
       - run: make test
+  check-latest:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./tmp
+      - run: docker load -i ./tmp/renatomefi-docker-testinfra.tar
+      - run: rm ./tmp/renatomefi-docker-testinfra.tar
+      - run: make check-latest
+  scan-vulnerability:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./tmp
+      - run:
+          name: Update Docker Compose
+          command: |
+            sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+      - run:
+          name: Install clair-scanner
+          command: |
+            sudo curl -L https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64 -o /usr/local/bin/clair-scanner
+            sudo chmod +x /usr/local/bin/clair-scanner
+      - run: docker load -i ./tmp/renatomefi-docker-testinfra.tar
+      - run: make ci-scan-vulnerability
+      - store_artifacts:
+          path: ./tmp/clair
+  download-tags:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - run: make download-tags
+      - run: docker save renatomefi/docker-testinfra -o ./tmp/renatomefi-docker-testinfra.tar
+      - persist_to_workspace:
+          root: ./tmp
+          paths:
+            - renatomefi-docker-testinfra.tar
+            - tags.list
 
 workflows:
   version: 2
-  test_build_and_test:
+  lint_build_test_scan:
     jobs:
       - lint
-      - build_and_test
+      - build:
+          requires:
+            - lint
+      - test:
+          requires:
+            - build
+      - scan-vulnerability:
+          requires:
+            - build
+      - check-latest:
+          requires:
+            - build
+  scan_vulnerabilities_weekly:
+    triggers:
+      - schedule:
+          cron: "0 3 * * 3"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - download-tags
+      - ci-scan-vulnerability
+    
