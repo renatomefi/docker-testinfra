@@ -13,7 +13,8 @@ check-latest:
 
 build:
 	rm -f ./tmp/tags.list
-	./build.sh 1.15.0 1.15 latest
+	./build.sh 1.16.0 1.16 latest
+	./build.sh 1.15.0 1.15
 	./build.sh 1.14.1
 
 push: ./tmp/tags.list
