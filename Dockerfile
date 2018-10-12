@@ -3,11 +3,9 @@ FROM alpine:3.8
 # Inhibits python to write byte code cache locally
 ENV PYTHONDONTWRITEBYTECODE=1
 
-RUN set -xe \
+RUN set -e \
     && apk add --no-cache docker python py-pip \
-    && apk add --no-cache --virtual build-dependencies build-base gcc wget git python-dev libffi-dev libressl-dev
-
-RUN set -xe \
+    && apk add --no-cache --virtual build-dependencies build-base gcc wget git python-dev libffi-dev libressl-dev \
     && pip install --upgrade pip \
     && pip install docker \
     && pip install paramiko \
