@@ -14,7 +14,7 @@ Considering your tests are under `./tests`
 docker run --rm -t \
   -v "$(pwd)/tests:/tests" \
   -v /var/run/docker.sock:/var/run/docker.sock:ro \
-  renatomefi/testinfra:latest \
+  renatomefi/docker-testinfra:latest \
   --verbose --hosts='docker://CONTAINER_NAME_OR_ID'
 ```
 
