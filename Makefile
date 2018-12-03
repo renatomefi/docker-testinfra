@@ -12,8 +12,10 @@ check-latest:
 	diff ./tmp/tag.latest ./tmp/tag.repo.latest
 
 build:
-	rm -f ./tmp/tags.list
-	./build.sh 1.16.0 1.16 1 latest
+	>./tmp/tags.list
+	./build.sh 1.18.0 1.18 1 latest
+	./build.sh 1.17.0 1.17
+	./build.sh 1.16.0 1.16
 	./build.sh 1.15.0 1.15
 	./build.sh 1.14.1 1.14
 

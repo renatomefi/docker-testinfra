@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xeEuo pipefail
+set -eEuo pipefail
 
 declare -r VERSION_TESTINFRA=$1
 
