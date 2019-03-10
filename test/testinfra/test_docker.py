@@ -8,13 +8,9 @@ def test_executables(host):
 def test_executables(host):
     assert host.exists("testinfra")
 
-def test_pip_is_installed(host):
-    pip = host.package("py-pip")
-    assert pip.is_installed
-    assert pip.version.startswith("18")
-
 def test_pip_packages(host):
     packages = host.pip_package.get_packages()
+    assert "pip" in packages
     assert "docker" in packages
     assert "testinfra" in packages
     assert "paramiko" in packages

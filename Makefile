@@ -6,20 +6,21 @@ mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(abspath $(patsubst %/,%,$(dir $(mkfile_path))))
 
 check-latest:
-	docker build -t renatomefi/docker-testinfra:latest-build .
+	docker build -t renatomefi/docker-testinfra:latest-build -f Dockerfile-python3 .
 	docker run --rm -it renatomefi/docker-testinfra:latest-build -v | grep testinfra- | cut -d- -f2 > ./tmp/tag.latest
 	docker run --rm -it renatomefi/docker-testinfra:latest -v | grep testinfra- | cut -d- -f2 > ./tmp/tag.repo.latest
 	diff ./tmp/tag.latest ./tmp/tag.repo.latest
 
 build:
 	>./tmp/tags.list
-	./build.sh 2.0.0 2.0 2 latest
-	./build.sh 1.19.0 1.19 1
-	./build.sh 1.18.0 1.18
-	./build.sh 1.17.0 1.17
-	./build.sh 1.16.0 1.16
-	./build.sh 1.15.0 1.15
-	./build.sh 1.14.1 1.14
+	./build.sh python3 2.0.0 2.0.0 2.0 2 latest
+	./build.sh python3 1.19.0 1.19.0-python3 1.19-python3 1-python3
+	./build.sh python2 1.19.0 1.19.0 1.19 1
+	./build.sh python2 1.18.0 1.18.0 1.18
+	./build.sh python2 1.17.0 1.17.0 1.17
+	./build.sh python2 1.16.0 1.16.0 1.16
+	./build.sh python2 1.15.0 1.15.0 1.15
+	./build.sh python2 1.14.1 1.14.1 1.14
 
 push: ./tmp/tags.list
 	cat ./tmp/tags.list | xargs -I % sh -c 'docker push %'
@@ -28,7 +29,8 @@ help:
 	docker run --rm -t renatomefi/docker-testinfra:latest --help
 
 lint:
-	docker run -v ${current_dir}:/project:ro --workdir=/project --rm -t hadolint/hadolint:latest-debian hadolint Dockerfile
+	docker run -v ${current_dir}:/project:ro --workdir=/project --rm -t hadolint/hadolint:latest-debian hadolint Dockerfile-python2
+	docker run -v ${current_dir}:/project:ro --workdir=/project --rm -t hadolint/hadolint:latest-debian hadolint Dockerfile-python3
 
 test: ./tmp/tags.list
 	cat ./tmp/tags.list | grep ":1" | xargs -I % sh -c 'docker run --rm -t -v ${current_dir}/test:/tests:ro -v /var/run/docker.sock:/var/run/docker.sock:ro %'

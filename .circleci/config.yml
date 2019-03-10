@@ -6,7 +6,8 @@ jobs:
       - image: hadolint/hadolint:latest-debian
     steps:
       - checkout
-      - run: hadolint Dockerfile
+      - run: hadolint Dockerfile-python2
+      - run: hadolint Dockerfile-python3
   build:
     machine:
       enabled: true
@@ -100,4 +101,3 @@ workflows:
     jobs:
       - download-tags
       - ci-scan-vulnerability
-    

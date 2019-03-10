@@ -1,0 +1,19 @@
+FROM alpine:3.9
+
+# Inhibits python to write byte code cache locally
+ENV PYTHONDONTWRITEBYTECODE=1
+
+RUN set -e \
+    && apk add --no-cache docker python3 \
+    && apk add --no-cache --virtual build-dependencies build-base gcc wget git python3-dev libffi-dev libressl-dev \
+    && pip3 install --no-cache-dir --upgrade pip \
+    && pip3 install --no-cache-dir docker \
+    && pip3 install --no-cache-dir paramiko \
+    && pip3 install --no-cache-dir testinfra \
+    && apk del build-dependencies \
+    && rm -rf /var/cache/apk
+
+WORKDIR /tests
+
+# Inhibits pytest to write tests cache
+ENTRYPOINT ["py.test", "-p", "no:cacheprovider"]
