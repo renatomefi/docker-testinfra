@@ -1,4 +1,4 @@
-all: lint build test scan-vulnerability
+all: lint build test scan-vulnerability check-latest
 
 .PHONY: *
 
