@@ -2,6 +2,8 @@
 
 set -eEuo pipefail
 
+export DOCKER_BUILDKIT=1
+
 declare -r VERSION_PYTHON=$1
 declare -r VERSION_TESTINFRA=$2
 declare VERSION_PYTHON_NUMERIC

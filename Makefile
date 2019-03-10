@@ -5,6 +5,8 @@ all: lint build test scan-vulnerability check-latest
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(abspath $(patsubst %/,%,$(dir $(mkfile_path))))
 
+export DOCKER_BUILDKIT=1
+
 check-latest:
 	docker build -t renatomefi/docker-testinfra:latest-build -f Dockerfile-python3 .
 	docker run --rm -it renatomefi/docker-testinfra:latest-build -v | grep testinfra- | cut -d- -f2 > ./tmp/tag.latest

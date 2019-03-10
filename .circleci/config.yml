@@ -9,10 +9,13 @@ jobs:
       - run: hadolint Dockerfile-python2
       - run: hadolint Dockerfile-python3
   build:
-    machine:
-      enabled: true
+    docker:
+      - image: docker:18
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 18.09.3-ce
+      - run: apk add --no-cache make bash
       - run: make build
       - run: docker save renatomefi/docker-testinfra -o ./tmp/renatomefi-docker-testinfra.tar
       - persist_to_workspace:
