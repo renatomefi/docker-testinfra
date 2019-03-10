@@ -11,7 +11,7 @@ def test_executables(host):
 def test_pip_is_installed(host):
     pip = host.package("py-pip")
     assert pip.is_installed
-    assert pip.version.startswith("10")
+    assert pip.version.startswith("18")
 
 def test_pip_packages(host):
     packages = host.pip_package.get_packages()

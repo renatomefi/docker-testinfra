@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.9
 
 # Inhibits python to write byte code cache locally
 ENV PYTHONDONTWRITEBYTECODE=1
