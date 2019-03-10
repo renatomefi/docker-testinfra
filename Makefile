@@ -13,7 +13,8 @@ check-latest:
 
 build:
 	>./tmp/tags.list
-	./build.sh 1.19.0 1.19 1 latest
+	./build.sh 2.0.0 2.0 2 latest
+	./build.sh 1.19.0 1.19 1
 	./build.sh 1.18.0 1.18
 	./build.sh 1.17.0 1.17
 	./build.sh 1.16.0 1.16
@@ -30,7 +31,8 @@ lint:
 	docker run -v ${current_dir}:/project:ro --workdir=/project --rm -t hadolint/hadolint:latest-debian hadolint Dockerfile
 
 test: ./tmp/tags.list
-	cat ./tmp/tags.list | xargs -I % sh -c 'docker run --rm -t -v ${current_dir}/test:/tests:ro -v /var/run/docker.sock:/var/run/docker.sock:ro %'
+	cat ./tmp/tags.list | grep ":1" | xargs -I % sh -c 'docker run --rm -t -v ${current_dir}/test:/tests:ro -v /var/run/docker.sock:/var/run/docker.sock:ro %'
+	cat ./tmp/tags.list | grep ":2\|:latest" | xargs -I % sh -c 'docker run --rm -t -v ${current_dir}/test:/tests:ro -v /var/run/docker.sock:/var/run/docker.sock:ro % -m "not v1"'
 
 download-tags:
 	docker pull -a renatomefi/docker-testinfra
