@@ -15,7 +15,8 @@ check-latest:
 
 build:
 	>./tmp/tags.list
-	./build.sh python3 2.0.0 2.0.0 2.0 2 latest
+	./build.sh python3 2.1.0 2.1.0 2.1 2 latest
+	./build.sh python3 2.0.0 2.0.0 2.0
 	./build.sh python3 1.19.0 1.19.0-python3 1.19-python3 1-python3
 	./build.sh python2 1.19.0 1.19.0 1.19 1
 	./build.sh python2 1.18.0 1.18.0 1.18
