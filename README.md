@@ -1,7 +1,6 @@
 # A testinfra Docker container
 
 [![CircleCI](https://circleci.com/gh/renatomefi/docker-testinfra.svg?style=svg)](https://circleci.com/gh/renatomefi/docker-testinfra)
-[![Docker hub](https://badgen.net/badge//Docker%20Hub?icon=docker)](https://hub.docker.com/r/renatomefi/docker-testinfra/)
 [![Docker hub](https://img.shields.io/docker/pulls/renatomefi/docker-testinfra.svg)](https://hub.docker.com/r/renatomefi/docker-testinfra/)
 [![Docker hub](https://img.shields.io/microbadger/image-size/renatomefi/docker-testinfra/2.svg)](https://hub.docker.com/r/renatomefi/docker-testinfra/)
 
@@ -29,6 +28,9 @@ This images simply provides an entrypoint to `py.test` with a few parameters to 
 
 You use more to less specific versions for instance:
 
+- `renatomefi/docker-testinfra:3`
+- `renatomefi/docker-testinfra:3.2`
+- `renatomefi/docker-testinfra:3.2.0`
 - `renatomefi/docker-testinfra:2`
 - `renatomefi/docker-testinfra:2.0`
 - `renatomefi/docker-testinfra:2.0.0`
