@@ -30,7 +30,7 @@ build:
 	./build.sh python2 1.14.1 1.14.1 1.14
 
 push: ./tmp/tags.list
-	cat ./tmp/tags.list | xargs -I % sh -c 'docker push %'
+	cat ./tmp/tags.list | sort | xargs -I % sh -c 'docker push %'
 
 help:
 	docker run --rm -t renatomefi/docker-testinfra:latest --help
