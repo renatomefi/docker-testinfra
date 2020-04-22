@@ -15,7 +15,10 @@ check-latest:
 
 build:
 	>./tmp/tags.list
-	./build.sh python3 3.2.0 3.2.0 3.2 3 latest
+	./build.sh python3 5.0.0 5.0.0 5.0 5 latest
+	./build.sh python3 4.1.0 4.1.0 4.1 4
+	./build.sh python3 3.4.0 3.4.0 3.4 3
+	./build.sh python3 3.2.0 3.2.0 3.2
 	./build.sh python3 2.1.0 2.1.0 2.1 2
 	./build.sh python3 2.0.0 2.0.0 2.0
 	./build.sh python3 1.19.0 1.19.0-python3 1.19-python3 1-python3
@@ -27,7 +30,7 @@ build:
 	./build.sh python2 1.14.1 1.14.1 1.14
 
 push: ./tmp/tags.list
-	cat ./tmp/tags.list | xargs -I % sh -c 'docker push %'
+	cat ./tmp/tags.list | sort | xargs -I % sh -c 'docker push %'
 
 help:
 	docker run --rm -t renatomefi/docker-testinfra:latest --help
