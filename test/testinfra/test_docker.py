@@ -1,11 +1,12 @@
 import pytest
 
+
 def test_executables(host):
     assert host.exists("docker")
     assert host.exists("pip")
 
 @pytest.mark.v1
-def test_executables(host):
+def test_executables_v1(host):
     assert host.exists("testinfra")
 
 def test_pip_packages(host):
