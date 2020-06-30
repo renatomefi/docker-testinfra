@@ -15,7 +15,8 @@ check-latest:
 
 build:
 	>./tmp/tags.list
-	./build.sh python3 5.0.0 5.0.0 5.0 5 latest
+	./build.sh python3 5.2.1 5.2.1 5.2 5 latest
+	./build.sh python3 5.0.0 5.0.0 5.0
 	./build.sh python3 4.1.0 4.1.0 4.1 4
 	./build.sh python3 3.4.0 3.4.0 3.4 3
 	./build.sh python3 3.2.0 3.2.0 3.2
